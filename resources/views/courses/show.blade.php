@@ -45,7 +45,7 @@
                     {{ __('Registered students') }}
                 </h2>
 
-                @can('view course students')
+                @can('viewRoster', $course)
                     @if ($course->students->isEmpty())
                         <p class="px-4 py-6 text-sm text-gray-500">{{ __('No student has registered for this course yet.') }}</p>
                     @else

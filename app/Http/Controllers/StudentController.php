@@ -8,18 +8,15 @@ use App\Models\Student;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource. Route middleware requires the manage students permission.
      */
-    public function index(Request $request): View
+    public function index(): View
     {
-        abort_unless($request->user()->can('manage students'), 403, 'Only an administrator can open the student list.');
-
         return view('students.index', [
             'students' => Student::query()->withCount('courses')->orderBy('student_number')->paginate(10),
         ]);
@@ -28,10 +25,8 @@ class StudentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request): View
+    public function create(): View
     {
-        abort_unless($request->user()->can('manage students'), 403, 'Only an administrator can add students.');
-
         return view('students.create');
     }
 
@@ -68,12 +63,10 @@ class StudentController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource. The policy decides: an administrator or the student themselves.
      */
-    public function show(Request $request, Student $student): View
+    public function show(Student $student): View
     {
-        abort_unless($request->user()->can('manage students'), 403, 'Only an administrator can open a student record.');
-
         $student->load(['user', 'courses.lecturer']);
 
         return view('students.show', ['student' => $student]);
@@ -82,10 +75,8 @@ class StudentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, Student $student): View
+    public function edit(Student $student): View
     {
-        abort_unless($request->user()->can('manage students'), 403, 'Only an administrator can change students.');
-
         return view('students.edit', ['student' => $student]);
     }
 
@@ -113,10 +104,8 @@ class StudentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Student $student): RedirectResponse
+    public function destroy(Student $student): RedirectResponse
     {
-        abort_unless($request->user()->can('manage students'), 403, 'Only an administrator can delete students.');
-
         $studentNumber = $student->student_number;
 
         // The account is the parent row, so removing it cascades to the student record and its registrations.
