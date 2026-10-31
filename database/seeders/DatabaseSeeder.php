@@ -14,9 +14,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // UserSeeder, StudentSeeder, CourseSeeder and RegistrationSeeder are appended here by the Q2 branch.
+        // Roles and permissions come first because the other seeders assign them to the accounts they create.
         $this->call([
             RolesAndPermissionsSeeder::class,
+            UserSeeder::class,
+            StudentSeeder::class,
+            CourseSeeder::class,
+            RegistrationSeeder::class,
         ]);
     }
 }
