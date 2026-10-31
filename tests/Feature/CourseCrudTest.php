@@ -30,7 +30,7 @@ test('a lecturer only sees the courses assigned to them', function () {
 });
 
 test('a student sees the courses they are not registered for yet', function () {
-    $student = Student::factory()->create();
+    $student = studentWithLogin();
     $registered = Course::factory()->create();
     $open = Course::factory()->create();
 
