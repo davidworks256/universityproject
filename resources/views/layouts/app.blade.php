@@ -15,7 +15,15 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gray-100 flex flex-col">
+            <!-- Site Header -->
+            <header class="bg-gray-800 text-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 text-sm flex justify-between">
+                    <span class="font-semibold">{{ config('app.name', 'Student Management System') }}</span>
+                    <span>{{ Auth::check() && Auth::user()->getRoleNames()->isNotEmpty() ? Auth::user()->getRoleNames()->implode(', ') : __('Not signed in') }}</span>
+                </div>
+            </header>
+
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -27,10 +35,50 @@
                 </header>
             @endisset
 
+            <!-- Flash Messages -->
+            @if (session('success'))
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+                    <div class="rounded-md bg-green-50 border border-green-300 p-4 text-sm font-medium text-green-800">
+                        {{ session('success') }}
+                    </div>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+                    <div class="rounded-md bg-red-50 border border-red-300 p-4 text-sm font-medium text-red-800">
+                        {{ session('error') }}
+                    </div>
+                </div>
+            @endif
+
+            <!-- Validation Error Summary -->
+            @if ($errors->any())
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+                    <div class="rounded-md bg-red-50 border border-red-300 p-4 text-sm text-red-800">
+                        {{ __('Please correct the following problems:') }}
+
+                        <ul class="mt-2 list-disc list-inside space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
+
             <!-- Page Content -->
-            <main>
-                {{ $slot }}
+            <main class="flex-1">
+                {{ $slot ?? '' }}
+                @yield('content')
             </main>
+
+            <!-- Site Footer -->
+            <footer class="bg-white border-t border-gray-200 mt-12">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-sm text-gray-500">
+                    &copy; {{ now()->year }} {{ config('app.name', 'Student Management System') }}. {{ __('All rights reserved.') }}
+                </div>
+            </footer>
         </div>
     </body>
 </html>
