@@ -1,59 +1,164 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Student Management System (BUC3131 Coursework Two)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A web system for a university that keeps records of students, courses, lecturers and course
+registrations. Three kinds of user see three different sets of pages: an **administrator** manages
+everything, a **lecturer** reads the courses assigned to them and the students on them, a **student**
+looks at the courses they have not taken yet, registers for them and cancels their own registrations.
 
-## About Laravel
+Built by five students on `https://github.com/davidworks256/universityproject`.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+| Part | What is used |
+|---|---|
+| Framework | Laravel 12 (PHP 8.2) |
+| Database | MySQL or MariaDB (tests run on SQLite in memory) |
+| Authentication | Laravel Breeze, Blade stack |
+| Roles and permissions | `spatie/laravel-permission` 6 |
+| Front end | Blade views, Tailwind CSS 3, Alpine.js, Vite |
+| Tests | Pest 3 (121 tests) |
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 1. Installing it
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+You need PHP 8.2 or newer, Composer, Node.js and a MySQL or MariaDB server.
 
-## Learning Laravel
+```bash
+git clone https://github.com/davidworks256/universityproject.git sms
+cd sms
+composer install
+cp .env.example .env
+php artisan key:generate
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 2. Database setup
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Create an empty database called `sms` and make sure the `DB_*` lines in `.env` match your server.
+The defaults in `.env.example` are what the team used with XAMPP:
 
-## Laravel Sponsors
+```dotenv
+DB_CONNECTION=mariadb
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=sms
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Then build the tables, fill them with the sample data and build the CSS and JavaScript:
 
-### Premium Partners
+```bash
+php artisan migrate:fresh --seed
+npm install
+npm run build
+php artisan serve
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Open <http://localhost:8000>. `composer setup` runs the steps above as one command, but it migrates
+without seeding, so run `php artisan db:seed` after it. `composer dev` starts the server, the queue, the
+log reader and Vite together for development.
 
-## Contributing
+`php artisan db:seed` can be run as many times as you like: every seeder uses `firstOrCreate`,
+`syncRoles` or `syncWithoutDetaching`, so a second run adds nothing.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 3. Roles and what each one may do
 
-## Code of Conduct
+Roles are `admin`, `lecturer` and `student`. The permissions are `manage students`, `manage courses`,
+`manage registrations`, `manage users`, `view assigned courses`, `view course students`,
+`view available courses`, `view own registrations` and `register for course`. Routes are guarded by
+the `permission:` middleware declared in `routes/web.php`; single records are guarded by the three
+policies in `app/Policies`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Role | May do |
+|---|---|
+| Administrator | add, change and delete students, courses and registrations; open any record; cancel any registration |
+| Lecturer | read the courses where they are the assigned lecturer, and the students registered on them; change nothing |
+| Student | read the available courses, register for one, cancel their own registration, open their own student record |
 
-## Security Vulnerabilities
+The rules a marker can test in five minutes: a lecturer opening a course assigned to somebody else
+gets 403, a student opening another student's record gets 403, a student cancelling another student's
+registration gets 403, and registering for the same course twice is refused first by the code and
+then by the unique index on `course_registrations`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 4. Sample logins
 
-## License
+Every seeded account uses the password `password`. These come from `php artisan db:seed`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Role | Email |
+|---|---|
+| Administrator | `admin@example.com` |
+| Lecturer | `lecturer@example.com` (Dr. Mary Ssebugwawo) |
+| Lecturer | `lecturer2@example.com` (Dr. John Bhoke) |
+| Student | `susan.achan@student.mubs.ac.ug` (BUC/2024/0001) |
+| Student | `peter.okello@student.mubs.ac.ug` (BUC/2024/0002) |
+| Student | `grace.namutebi@student.mubs.ac.ug` (BUC/2024/0003) |
+| Student | `daniel.ssekandi@student.mubs.ac.ug` (BUC/2024/0004) |
+| Student | `aisha.balikemwa@student.mubs.ac.ug` (BUC/2024/0005) |
+| Student | `emmanuel.turyahikayo@student.mubs.ac.ug` (BUC/2024/0006) |
+
+The sample data is six students, five courses (`BUC1101`, `BUC1202`, `BUC2303`, `BUC2404`, `BUC3505`)
+and fifteen registrations, two or three courses per student.
+
+Accounts made with the sign-up form are given the `student` role, and a student added on
+**Students → Add student** also gets a login, with the same email address and the password `password`.
+
+## 5. The data model
+
+| Table | Columns |
+|---|---|
+| `users` | `id`, `name`, `email`, `password`, timestamps; roles come from Spatie's own tables |
+| `students` | `id`, `user_id` → `users` (delete cascades), `student_number` (unique), `name`, `email` (unique), `phone` nullable, timestamps |
+| `courses` | `id`, `code` (unique), `title`, `description` nullable, `credits`, `lecturer_id` → `users` nullable (set to null on delete), timestamps |
+| `course_registrations` | `id`, `student_id` → `students` (cascade), `course_id` → `courses` (cascade), `registered_at`, timestamps, **unique (`student_id`, `course_id`)** |
+
+Relationships: `User` hasOne `Student` and hasMany `Course` as `taughtCourses`; `Student` belongsTo
+`User` and belongsToMany `Course`; `Course` belongsTo `User` as `lecturer` and belongsToMany
+`Student`. Both many-to-many pairs go through `course_registrations` and carry `registered_at`.
+
+## 6. Where the code is
+
+```
+app/Http/Controllers    StudentController, CourseController, RegistrationController, DashboardController
+app/Http/Requests       five form requests: student and course store/update, registration store
+app/Policies            StudentPolicy, CoursePolicy, RegistrationPolicy
+app/Models              Student, Course, CourseRegistration, User
+database/migrations     the four tables above plus the Breeze and Spatie tables
+database/seeders        RolesAndPermissionsSeeder, UserSeeder, StudentSeeder, CourseSeeder, RegistrationSeeder
+resources/views         layouts/app.blade.php, partials/nav.blade.php, students/, courses/, registrations/, dashboard/
+routes/web.php          the resource routes and their middleware
+tests/Feature           one file per area, 121 tests
+```
+
+## 7. Running the tests
+
+```bash
+php artisan test
+```
+
+The suite uses an in-memory SQLite database, so no MySQL server is needed to run it. Format the PHP
+with `vendor/bin/pint` before committing.
+
+## 8. Screenshots
+
+Taken from the running application after `php artisan migrate:fresh --seed`. `docs/screenshots/README.md`
+says which account and page each one came from.
+
+**Administrator** (`admin@example.com`) — the dashboard with the record counts and the latest
+registrations, the student list, and the course list:
+
+![Administrator dashboard](docs/screenshots/admin-dashboard.png)
+![Student list](docs/screenshots/admin-students.png)
+![Course list](docs/screenshots/admin-courses.png)
+
+**Lecturer** (`lecturer@example.com`) — a course assigned to that lecturer, with the students registered
+on it. The same page opened by a lecturer it is not assigned to returns 403:
+
+![Course roster](docs/screenshots/lecturer-course-roster.png)
+
+**Student** (`susan.achan@student.mubs.ac.ug`) — her own registrations with the courses still open to her,
+and the refusal when she types another student's record into the address bar:
+
+![Student dashboard](docs/screenshots/student-dashboard.png)
+![Refused on another student's record](docs/screenshots/student-forbidden.png)
+
+## 9. How the work was split
+
+See `CONTRIBUTIONS.md` for the members, the branches, the pull requests and which question each piece
+answers. `WORK_ORDER.md` explains the order the pieces were merged in and why that order was chosen.
