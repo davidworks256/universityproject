@@ -15,6 +15,8 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @include('partials.nav')
                 </div>
             </div>
 
@@ -70,6 +72,8 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @include('partials.nav', ['variant' => 'mobile'])
         </div>
 
         <!-- Responsive Settings Options -->
