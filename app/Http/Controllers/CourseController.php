@@ -10,6 +10,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 
 class CourseController extends Controller
 {
@@ -44,10 +45,8 @@ class CourseController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request): View
+    public function create(): View
     {
-        abort_unless($request->user()->can('manage courses'), 403, 'Only an administrator can add courses.');
-
         return view('courses.create', ['lecturers' => $this->lecturerAccounts()]);
     }
 
@@ -63,20 +62,17 @@ class CourseController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource. The policy allows an administrator, the lecturer teaching the
+     * course and a student reading the course before registering for it.
      */
-    public function show(Request $request, Course $course): View
+    public function show(Course $course): View
     {
-        $user = $request->user();
+        $course->load('lecturer');
 
-        // A lecturer may open the registered students of a course they teach, and no other.
-        abort_unless(
-            $user->cannot('view course students') || $user->can('manage courses') || $course->lecturer_id === $user->getKey(),
-            403,
-            'You may only open the roster of a course assigned to you.'
-        );
-
-        $course->load(['lecturer', 'students.user']);
+        // The list of registered students is only read for the people allowed to see it.
+        if (Gate::allows('viewRoster', $course)) {
+            $course->load('students.user');
+        }
 
         return view('courses.show', ['course' => $course]);
     }
@@ -84,10 +80,8 @@ class CourseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, Course $course): View
+    public function edit(Course $course): View
     {
-        abort_unless($request->user()->can('manage courses'), 403, 'Only an administrator can change courses.');
-
         return view('courses.edit', [
             'course' => $course,
             'lecturers' => $this->lecturerAccounts(),
@@ -108,10 +102,8 @@ class CourseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, Course $course): RedirectResponse
+    public function destroy(Course $course): RedirectResponse
     {
-        abort_unless($request->user()->can('manage courses'), 403, 'Only an administrator can delete courses.');
-
         if ($course->registrations()->exists()) {
             return redirect()->route('courses.show', $course)->with(
                 'error',

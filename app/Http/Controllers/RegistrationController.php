@@ -49,12 +49,6 @@ class RegistrationController extends Controller
     {
         $user = $request->user();
 
-        abort_unless(
-            $user->can('register for course') || $user->can('manage registrations'),
-            403,
-            'Only a student or an administrator can register for a course.'
-        );
-
         if ($user->can('manage registrations')) {
             return view('registrations.create', [
                 'students' => Student::query()->orderBy('student_number')->get(),
@@ -99,15 +93,10 @@ class RegistrationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage. The policy allows the own student and an administrator.
      */
-    public function destroy(Request $request, CourseRegistration $registration): RedirectResponse
+    public function destroy(CourseRegistration $registration): RedirectResponse
     {
-        $user = $request->user();
-        $ownRecord = $user->student?->getKey() === $registration->student_id;
-
-        abort_unless($ownRecord || $user->can('manage registrations'), 403, 'You may only cancel your own registrations.');
-
         $student = $registration->student;
         $code = $registration->course->code;
 
