@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Student;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,7 +46,20 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function userWithRole(string $roleName): User
 {
-    // ..
+    $user = User::factory()->create();
+    $user->assignRole($roleName);
+
+    return $user;
+}
+
+/**
+ * A student record whose sign-in account really has the student role, so permission checks behave.
+ */
+function studentWithLogin(): Student
+{
+    return Student::factory()->create([
+        'user_id' => userWithRole('student')->getKey(),
+    ]);
 }
