@@ -35,4 +35,12 @@
     <x-dynamic-component :component="$navLinkComponent" :href="route('registrations.index')" :active="request()->routeIs('registrations.*')">
         {{ __('My Registrations') }}
     </x-dynamic-component>
+
+    {{-- A student may open their own record, but only once an administrator has created it. --}}
+    @php($ownRecord = auth()->user()->student)
+    @if ($ownRecord)
+        <x-dynamic-component :component="$navLinkComponent" :href="route('students.show', $ownRecord)" :active="request()->routeIs('students.show')">
+            {{ __('My Record') }}
+        </x-dynamic-component>
+    @endif
 @endrole
