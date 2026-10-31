@@ -54,6 +54,33 @@ test('the student only sees the links for their own registration business', func
         ->assertDontSee('My Courses', false);
 });
 
+test('a student with a record is offered the link to it and may open that page', function () {
+    $student = studentWithLogin();
+
+    $this->actingAs($student->user)
+        ->get('/dashboard')
+        ->assertOk()
+        ->assertSee('My Record', false)
+        ->assertSee('/students/'.$student->getKey(), false);
+
+    $this->actingAs($student->user)
+        ->get("/students/{$student->getKey()}")
+        ->assertOk()
+        ->assertSee($student->student_number);
+});
+
+test('a student account whose record is missing is not offered the link', function () {
+    $this->actingAs(signedInUserWithRole('student'))
+        ->get('/dashboard')
+        ->assertDontSee('My Record', false);
+});
+
+test('the other roles are not offered the student links', function (string $roleName) {
+    $this->actingAs(signedInUserWithRole($roleName))
+        ->get('/dashboard')
+        ->assertDontSee('My Record', false);
+})->with(['admin', 'lecturer']);
+
 test('the layout renders a success flash message', function () {
     $this->actingAs(signedInUserWithRole('admin'))
         ->withSession(['success' => 'Student record saved.'])
