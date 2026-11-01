@@ -10,7 +10,7 @@ Built by five students on `https://github.com/davidworks256/universityproject`.
 | Part | What is used |
 |---|---|
 | Framework | Laravel 12 (PHP 8.2) |
-| Database | MySQL or MariaDB (tests run on SQLite in memory) |
+| Database | MySQL (tests run on SQLite in memory) |
 | Authentication | Laravel Breeze, Blade stack |
 | Roles and permissions | `spatie/laravel-permission` 6 |
 | Front end | Blade views, Tailwind CSS 3, Alpine.js, Vite |
@@ -18,7 +18,7 @@ Built by five students on `https://github.com/davidworks256/universityproject`.
 
 ## 1. Installing it
 
-You need PHP 8.2 or newer, Composer, Node.js and a MySQL or MariaDB server.
+You need PHP 8.2 or newer, Composer, Node.js and a MySQL server.
 
 ```bash
 git clone https://github.com/davidworks256/universityproject.git sms
@@ -31,10 +31,10 @@ php artisan key:generate
 ## 2. Database setup
 
 Create an empty database called `sms` and make sure the `DB_*` lines in `.env` match your server.
-The defaults in `.env.example` are what the team used with XAMPP:
+The defaults in `.env.example` are what the team used against a local MySQL server:
 
 ```dotenv
-DB_CONNECTION=mariadb
+DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=sms
