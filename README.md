@@ -5,7 +5,7 @@ registrations. Three kinds of user see three different sets of pages: an **admin
 everything, a **lecturer** reads the courses assigned to them and the students on them, a **student**
 looks at the courses they have not taken yet, registers for them and cancels their own registrations.
 
-Built by five students on `https://github.com/davidworks256/universityproject`.
+Built by six students on `https://github.com/davidworks256/universityproject`.
 
 | Part | What is used |
 |---|---|
@@ -14,7 +14,7 @@ Built by five students on `https://github.com/davidworks256/universityproject`.
 | Authentication | Laravel Breeze, Blade stack |
 | Roles and permissions | `spatie/laravel-permission` 6 |
 | Front end | Blade views, Tailwind CSS 3, Alpine.js, Vite |
-| Tests | Pest 3 (121 tests) |
+| Tests | Pest 3 (124 tests) |
 
 ## 1. Installing it
 
@@ -123,7 +123,7 @@ database/migrations     the four tables above plus the Breeze and Spatie tables
 database/seeders        RolesAndPermissionsSeeder, UserSeeder, StudentSeeder, CourseSeeder, RegistrationSeeder
 resources/views         layouts/app.blade.php, partials/nav.blade.php, students/, courses/, registrations/, dashboard/
 routes/web.php          the resource routes and their middleware
-tests/Feature           one file per area, 121 tests
+tests/Feature           one file per area, 124 tests
 ```
 
 ## 7. Running the tests

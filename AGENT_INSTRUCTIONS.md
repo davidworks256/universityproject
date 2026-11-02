@@ -1,5 +1,11 @@
 # AI Agent Instructions: Student Management System (Laravel)
 
+> **Out of date on two points.** `WORK_ORDER.md` replaces the branch names and the build order written here;
+> the branches actually used were `feature/q1-database-relationships`, `feature/q2-seeders`,
+> `feature/q3-auth-roles-permissions`, `feature/q4-application-functionality`,
+> `feature/q5-blade-layout-validation` and `feature/q6-documentation`. The application runs on Laravel 12,
+> not Laravel 11. The per-member prompts below are still useful for scope.
+
 How to use this file:
 1. Save the **Shared Context** section as `AGENTS.md` (or `CLAUDE.md`) in the repo root so every member's agent reads it automatically.
 2. Each member pastes **only their own prompt** (Section 2) into their agent.
@@ -10,7 +16,7 @@ How to use this file:
 # 1. SHARED CONTEXT (put in AGENTS.md / CLAUDE.md)
 
 ## Project
-Laravel 11 Student Management System for a university course (BUC3131). Manages students, courses, lecturers and course registrations. Three roles: admin, lecturer, student. Built by 5 students on GitHub. Deadline 2 Nov 2026.
+Laravel 12 Student Management System for a university course (BUC3131). Manages students, courses, lecturers and course registrations. Three roles: admin, lecturer, student. Built by 5 students on GitHub. Deadline 2 Nov 2026.
 
 ## Stack
 - Laravel 11, PHP 8.2+, MySQL (or SQLite for local dev)

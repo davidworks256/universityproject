@@ -1,22 +1,26 @@
 # Contribution Report
 
-Coursework Two, BUC3131 — Student Management System. Five members, one repository
+Coursework Two, BUC3131 — Student Management System. Six members, one repository
 (`davidworks256/universityproject`), one branch per question, every piece joined through a pull request
-into `develop` and approved by the repository owner.
+into `develop` and approved by the repository owner. Five members each built one of the six questions;
+the sixth member ran the quality pass over the finished system and fixed what it found.
 
 Each commit was made with that member's own GitHub name and email, so the history shows who wrote what.
 The counts can be checked with `git shortlog -sne develop` (merge commits belong to the owner, who
 pressed Merge on every pull request).
 
-| Member | GitHub account | Email on the commits | Question | Marks |
-|---|---|---|---|---|
-| Member 1 — team lead and repository owner | `davidworks256` | lookslikedavid@gmail.com | Question 3 (all of it) and Question 6 | 6 + 3 |
-| Member 2 | `2400718770-debug` | 2400718770@mubs.ac.ug | Question 1 | 10 |
-| Member 3 | `masha256ug` | nakibuulemariam671@gmail.com | Question 2 | 4 |
-| Member 4 | `Emmanuel-kisakye` | Kisakyeemma20@gmail.com | Question 4 | 12 |
-| Member 5 | `paulmukasa98` | paulmukasassempijja@gmail.com | Question 5 | 5 |
+| Member | Full name and student number | GitHub account | Email on the commits | Question | Marks |
+|---|---|---|---|---|---|
+| Member 1 — team lead and repository owner | MUGERWA DAVID, 2400707020 | `davidworks256` | lookslikedavid@gmail.com | Question 3 (all of it) and Question 6 | 6 + 3 |
+| Member 2 | NAMUTEBI ANITAH MWITENDE, 2400718770 | `2400718770-debug` | 2400718770@mubs.ac.ug | Question 1 | 10 |
+| Member 3 | NAKIBUULE MARIAM, 2400718122 | `masha256ug` | nakibuulemariam671@gmail.com | Question 2 | 4 |
+| Member 4 | KISAKYE EMMANUEL KINENE, 2400705990 | `Emmanuel-kisakye` | Kisakyeemma20@gmail.com | Question 4 | 12 |
+| Member 5 | SSEMPIJJA PAUL MUKASA, 2400711237 | `paulmukasa98` | paulmukasassempijja@gmail.com | Question 5 | 5 |
+| Member 6 — quality checks and final fixes | NASSIMBWA JOVIA, 2400719143 | `2400719143` | 2400719143@mubs.ac.ug | Testing and fixes across the whole system | — |
 
-*Add your full name next to your GitHub account before the report is submitted.*
+Names and student numbers are the ones on the cover page of the project report. Members 2, 3, 4, 5 and 6
+are matched to their accounts by the student number or email on their commits; Member 1 is matched by
+ownership of the repository, so he should confirm it himself.
 
 ## Member 1 — `davidworks256` (Question 3 and Question 6)
 
@@ -85,6 +89,27 @@ sample logins, data model, screenshots), the screenshot folder, and the final me
 - The follow-up pull request: the *My Record* link together with the tests that check which links each
   role is offered, and the screenshots of the app for all three roles in `docs/screenshots/`.
 
+## Member 6 — `2400719143` (quality checks and final fixes)
+
+**Branch `feature/qa-fixes`.** The six questions were already owned, so this member worked across the whole
+finished system instead of taking one of them. Method: open the app as administrator, lecturer and student,
+try the paths that should fail, compare what the documents claim with what the code and database really
+hold, and for each problem write a test that fails first and then fix it, both in one commit.
+
+What she found and fixed:
+
+- the student list showed an empty table with no message when no students existed, while the course and
+  registration lists both explained themselves — now it says "No students yet.", covered by
+  `tests/Feature/EmptyStateTest.php` (three tests, one per role), which took the suite from 121 to 124;
+- three page titles still fell back to the word Laravel while the header and footer used the system name;
+- `docs/screenshots/README.md` told the marker the course list shows seats, but no seats column exists in
+  the `courses` table at all;
+- `AGENT_INSTRUCTIONS.md` advertised branch names that were never used and said Laravel 11; it now carries
+  a note naming the six real branches and the correct version;
+- `composer.json` described the project as the Laravel skeleton.
+
+`docs/QA_LOG.md` lists each problem, how it was found and the commit that fixed it.
+
 ## How the pieces went in
 
 | Pull request | Branch | Question | Merged as |
@@ -95,8 +120,13 @@ sample logins, data model, screenshots), the screenshot folder, and the final me
 | #4 | `feature/q2-seeders` | 2a, 2b, 2c, 2d | `8cb2876` |
 | #5 | `feature/q4-application-functionality` | 4a, 4b, 4c, 4d, 4e | `31aaac4` |
 | #6 | `feature/q3-auth-roles-permissions` | 3d, 3e | `62f722e` |
-| next | `feature/q5-blade-layout-validation` | 5b, 5c | student record link and its tests |
-| next | `feature/q6-documentation` | 6a, 6b, 6c | README, this report, screenshots |
+| #7 | `feature/q5-blade-layout-validation` | 5b, 5c | `43ea249` |
+| #8 | `feature/q6-documentation` | 6a, 6b, 6c | `e717f23` |
+| #9 | `feature/q5-blade-layout-validation` | landing page | `8ccfd08` |
+| #10 | `develop` → `main` | first merge of the tested app | `9813b90` |
+| #11 | `feature/q6-documentation` | README and `.env.example` use MySQL | `14023f1` |
+| #12 | `develop` → `main` | keeps `main` level with `develop` | `726130d` |
+| #13 | `feature/qa-fixes` | quality pass and final fixes | open |
 
 `WORK_ORDER.md` gives the reasons for that order. Every pull request was tested before it was opened:
 `php artisan migrate:fresh --seed` clean, `php artisan test` passing, `vendor/bin/pint --dirty` clean, and

@@ -9,7 +9,7 @@ which page it is.
 |---|---|---|---|
 | `admin-dashboard.png` | `admin@example.com` | `/dashboard` | the four counts and the latest registrations |
 | `admin-students.png` | `admin@example.com` | `/students` | student numbers, the course counts, the pagination links |
-| `admin-courses.png` | `admin@example.com` | `/courses` | the course list with codes, credits, seats and the lecturer for each course |
+| `admin-courses.png` | `admin@example.com` | `/courses` | the course list with codes, titles, credits, the lecturer and how many students are registered |
 | `lecturer-course-roster.png` | `lecturer@example.com` | `/courses/1` | the registered students of a course assigned to that lecturer |
 | `student-dashboard.png` | `susan.achan@student.mubs.ac.ug` | `/dashboard` | her registrations and the courses still open to her |
 | `student-forbidden.png` | `susan.achan@student.mubs.ac.ug` | `/students/5` | the 403 page, after typing another student's address |
