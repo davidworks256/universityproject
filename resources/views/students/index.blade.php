@@ -27,7 +27,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        @foreach ($students as $student)
+                        @forelse ($students as $student)
                             <tr>
                                 <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">{{ $student->student_number }}</td>
                                 <td class="px-4 py-3">{{ $student->name }}</td>
@@ -53,7 +53,13 @@
                                     @endcan
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-4 py-6 text-center text-sm text-gray-500">
+                                    {{ __('No students yet.') }}
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
